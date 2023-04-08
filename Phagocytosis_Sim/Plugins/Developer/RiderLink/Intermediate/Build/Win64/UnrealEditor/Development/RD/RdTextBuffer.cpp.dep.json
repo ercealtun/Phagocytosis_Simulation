@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\ercea\\onedrive\\belgeler\\github\\unreal engine\\phagocytosis_simulation\\phagocytosis_sim\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_gen_cpp\\src\\rdtextbuffer.cpp",
+        "ProvidedModule": "",
+        "Includes": [
+            "c:\\users\\ercea\\onedrive\\belgeler\\github\\unreal engine\\phagocytosis_simulation\\phagocytosis_sim\\plugins\\developer\\riderlink\\intermediate\\build\\win64\\unrealeditor\\development\\rd\\definitions.h",
+            "c:\\users\\ercea\\onedrive\\belgeler\\github\\unreal engine\\phagocytosis_simulation\\phagocytosis_sim\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_gen_cpp\\src\\rdtextbuffer.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
