@@ -9,6 +9,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Cell.generated.h"
 
+class USphereComponent;
 
 UCLASS()
 class PHAGOCYTOSIS_SIM_API ACell : public AActor
@@ -26,19 +27,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USphereComponent* CollisionComponent;
-	
+	UPROPERTY(VisibleAnywhere)
+	FVector CurrentDirection;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	UFUNCTION()
+	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* CollisionComponent;
 	
-
+	
+	
 
 };

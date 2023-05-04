@@ -10,7 +10,6 @@ ACell::ACell()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// MeshComponent assignments
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComponent->SetEnableGravity(false);
 	MeshComponent->SetSimulatePhysics(true);
@@ -24,13 +23,10 @@ ACell::ACell()
 		MeshComponent->SetStaticMesh(SphereMesh.Object);
 	}
 
-	// CollisionComponent assignments
+
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
 	CollisionComponent->SetSphereRadius(50.f);
 	CollisionComponent->SetupAttachment(MeshComponent);
-	
-	
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ACell::OnOverlapBegin);
 	
 }
 
@@ -40,30 +36,44 @@ void ACell::BeginPlay()
 	Super::BeginPlay();
 
 
-	FVector ImpulseDirection =FVector3d(-800.0f,-500.0f,0.0f) ; // Set the impulse direction
+	FVector ImpulseDirection = FVector3d(-400.0f,-400.0f,0.0f) ; // Set the impulse direction
 	float ImpulseMagnitude = 1.0f;  // Set the impulse magnitude
-
 	// Apply the impulse to the object
 	MeshComponent->AddImpulse(ImpulseMagnitude * ImpulseDirection, NAME_None, true);
 	
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ACell::OnSphereOverlap);
 
 	
 }
 
-void ACell::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ACell::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if(GEngine)
+	if(GEngine && OtherActor)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, OtherActorName);
+		if(OtherActor->ActorHasTag("Overlapper"))
+		{
+			GEngine->AddOnScreenDebugMessage(1,.3f,FColor::Red, TEXT("Yes its the cell"));
+
+			CurrentDirection.X = -CurrentDirection.X;
+			CurrentDirection.Y = -CurrentDirection.Y;
+			
+			float ImpulseMagnitude = 1.0f;  // Set the impulse magnitude
+			MeshComponent->AddImpulse(ImpulseMagnitude * CurrentDirection, NAME_None, true);
+			
+		}
+		
 	}
 }
+
 
 // Called every frame
 void ACell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+		
+	CurrentDirection = GetActorForwardVector();
+	
 	
 }
 

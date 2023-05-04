@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Overlapper.generated.h"
 
+class UBoxComponent;
+
+
 UCLASS()
 class PHAGOCYTOSIS_SIM_API AOverlapper : public AActor
 {
@@ -22,13 +25,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Collision component
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UBoxComponent* CollisionComponent;
+
+	UFUNCTION()
+	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	
 
 private:	
-
+	// Collision component
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* Box;
 
 };

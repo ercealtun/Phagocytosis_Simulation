@@ -12,13 +12,9 @@ AOverlapper::AOverlapper()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create collision component
-	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
-	CollisionComponent->SetBoxExtent(FVector(50.f,50.f,50.f)); // Set collision box size
-	CollisionComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic")); // Set collision settings
-	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CollisionComponent->SetLinearDamping(0.0f);
-	CollisionComponent->SetAngularDamping(0.0f);
+	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetupAttachment(GetRootComponent());
+
 
 }
 
@@ -26,13 +22,27 @@ AOverlapper::AOverlapper()
 void AOverlapper::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Box->OnComponentBeginOverlap.AddDynamic(this, &AOverlapper::OnBoxOverlap);
+}
+
+void AOverlapper::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FString OtherActorName = OtherActor->GetName();
+	if(GEngine && OtherActor)
+	{
+		if(OtherActor->ActorHasTag("Cell"))
+		{
+			//GEngine->AddOnScreenDebugMessage(1,.7f,FColor::Red, TEXT("Yes its the cell"));
+		}
+		
+	}
 }
 
 // Called every frame
 void AOverlapper::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
