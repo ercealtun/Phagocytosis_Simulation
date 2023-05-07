@@ -19,51 +19,75 @@ void ABacteriaCell::BeginPlay()
 	Super::BeginPlay();
 	
 	// ABacteriaCell::Division method called every 5 seconds
-	GetWorldTimerManager().SetTimer(DivisionTimerHandle, this, &ABacteriaCell::Division, 5.0f);
+	GetWorldTimerManager().SetTimer(DivisionTimerHandle, this, &ABacteriaCell::Split, 5.0f);
+
+	SetActorRelativeScale3D(FVector(2.56f,2.56f,2.56f));
 }
 
-void ABacteriaCell::Division()
+void ABacteriaCell::Split()
 {
-	if(GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 16.0f, FColor::Blue, TEXT("Hello there"));
-	}
 	SpawnNewerCells();
 }
 
 void ABacteriaCell::SpawnNewerCells()
 {
-	// Any of the XYZ axises can be taken here, because all the axises have the same scale
-	NewerCellRadius = GetActorRelativeScale3D().X * 0.5;
-
-	// FActorSpawnParameters structure is defined to determine the properties of the object to be spawned
-	FActorSpawnParameters SpawnInfo;
-
-	// This line of code specifies a method when spawning an Actor, where collisions are taken care of
-	// and spawn still performed in the event of a collision
-	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-	// Mother cell position before splitting
-	FVector SplitPosition = GetActorLocation();
-
-	// Mother cell rotation before splitting
-	FRotator SplitRotation = GetActorRotation();
-
-	// Destroy mother mesh before splitting
-	Mesh->DestroyComponent();
-
-	// Splitting
-	if(GetWorld()) // Procedural checking if world exists or not
+	if(IsSplitReady())
 	{
-		for(int i=0;i<FMath::RandRange(1,4);++i)
+		// Any of the XYZ axises can be taken here, because all the axises have the same scale
+		NewerCellRadius = GetActorScale3D() * 0.75;
+
+		// FActorSpawnParameters structure is defined to determine the properties of the object to be spawned
+		FActorSpawnParameters SpawnInfo;
+
+		// This line of code specifies a method when spawning an Actor, where collisions are taken care of
+		// and spawn still performed in the event of a collision
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Mother cell position before splitting
+		FVector LastPositionMotherDied = GetActorLocation();
+
+		// Mother cell rotation before splitting
+		FRotator LastRotationMotherDied = GetActorRotation();
+
+		// Split phase
+		if(GetWorld()) // Procedural checking if world exists or not
 		{
-			FVector NewLocation = SplitPosition + FVector(FMath::RandRange(-100.f, 100.f), FMath::RandRange(-100.f, 100.f), 0.f);
+			// Destroy mother mesh before splitting
+			Mesh->DestroyComponent();
+		
+			for(int i=0;i<FMath::RandRange(1,4);++i)
+			{
+				FVector NewLocation = LastPositionMotherDied + FVector(FMath::RandRange(-100.f, 100.f),FMath::RandRange(-100.f, 100.f), 0.f);
+				ABacteriaCell* NewBacteriaCell = GetWorld()->SpawnActor<ABacteriaCell>(GetClass(), NewLocation, LastRotationMotherDied);
+		
+				NewBacteriaCell->SetActorScale3D(NewerCellRadius);
+				if(GEngine)	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("bacteria size: %f"), NewBacteriaCell->GetActorScale3D().X));
 
-			FTransform SpawnTransform = FTransform(SplitRotation, NewLocation, FVector(NewerCellRadius, NewerCellRadius, NewerCellRadius));
-
-			GetWorld()->SpawnActor<ABacteriaCell>(this->GetClass(), SpawnTransform, SpawnInfo);
+			}
 		}
 	}
+
+}
+
+bool ABacteriaCell::IsSplitReady()
+{
+	if(GetActorScale3D().X >= 0.22f)
+	{
+		return true;
+	}else
+	{
+		if(GEngine)	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Timer stopped")));
+		GetWorldTimerManager().ClearTimer(DivisionTimerHandle); // Stopping the timer
+		return false;
+	}
+
+
+}
+
+void ABacteriaCell::OnCellOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//Super::OnCellOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 
 

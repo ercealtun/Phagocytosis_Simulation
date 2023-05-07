@@ -42,9 +42,21 @@ void ACell::BeginPlay()
 	// Apply impulse to the object
 	Mesh->AddImpulse(Power * ImpulseDirection, NAME_None, true);
 
+	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ACell::OnCellOverlap);
+
 	
 }
 
+void ACell::OnCellOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor)
+	{
+		FString OtherActorName = OtherActor->GetName();
+		if(GEngine)	GEngine->AddOnScreenDebugMessage(-1, 16.0f, FColor::Blue, FString::Printf(TEXT("Cell overlapped with %s"), *OtherActorName));
+	}
+	
+}
 
 
 // Called every frame

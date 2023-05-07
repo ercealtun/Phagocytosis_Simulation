@@ -26,12 +26,16 @@ protected:
 	virtual void BeginPlay() override;
 
 	// Division related methods & variables
-	void Division();
+	void Split();
 	void SpawnNewerCells();
+	bool IsSplitReady();
+
+	virtual void OnCellOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) override;
 
 	UPROPERTY(VisibleAnywhere)
 	FTimerHandle DivisionTimerHandle;
 
-	float NewerCellRadius;
+	FVector NewerCellRadius;
 	
 };
