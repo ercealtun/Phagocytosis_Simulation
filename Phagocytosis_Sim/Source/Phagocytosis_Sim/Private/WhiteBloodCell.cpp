@@ -7,6 +7,7 @@
 
 AWhiteBloodCell::AWhiteBloodCell()
 {
+	Mesh->SetCollisionProfileName(FName("WhiteBloodCell"));
 }
 
 void AWhiteBloodCell::Tick(float DeltaTime)

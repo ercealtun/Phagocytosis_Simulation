@@ -36,6 +36,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	FTimerHandle DivisionTimerHandle;
 
+	UPROPERTY(EditAnywhere, Category = Collision)
+	TEnumAsByte<ECollisionChannel> CollisionPreset;
+
 	FVector NewerCellRadius;
 	
 };
