@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Components/PrimitiveComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Cell.generated.h"
 
 class USphereComponent;
@@ -36,6 +35,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float Power;
+
+	UPROPERTY(VisibleAnywhere, Category=Collision)
+	UPhysicalMaterial* PhysicsMaterial;
 
 
 private:

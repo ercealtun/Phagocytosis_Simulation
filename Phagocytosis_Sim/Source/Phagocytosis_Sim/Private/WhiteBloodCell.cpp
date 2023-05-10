@@ -19,7 +19,6 @@ void AWhiteBloodCell::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorRelativeScale3D(FVector(0.64f,0.64f,0.64f));
-	Power = 10.f;
 }
 
 void AWhiteBloodCell::OnCellOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

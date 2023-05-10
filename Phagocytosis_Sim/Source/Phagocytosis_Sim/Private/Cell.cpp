@@ -3,6 +3,7 @@
 
 #include "Cell.h"
 #include "Components/PrimitiveComponent.h"
+#include "PhysicsEngine/PhysicsSettings.h"
 
 // Sets default values
 ACell::ACell()
@@ -19,11 +20,22 @@ ACell::ACell()
 	Mesh->SetAngularDamping(0.0f);
 
 	SetRootComponent(Mesh);
+
+	// Constructing sphere mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere"));
 	if(SphereMesh.Succeeded())
 	{
 		Mesh->SetStaticMesh(SphereMesh.Object);
 	}
+
+	// Assigning PM_Bounce physics material to mesh
+	ConstructorHelpers::FObjectFinder<UPhysicalMaterial> MaterialAsset(TEXT("/Content/Physics/PM_Bounce"));
+	if (MaterialAsset.Succeeded())
+	{
+		PhysicsMaterial = MaterialAsset.Object;
+	}
+
+	Mesh->SetPhysMaterialOverride(PhysicsMaterial);
 	
 }
 

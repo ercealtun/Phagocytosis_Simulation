@@ -4,7 +4,7 @@
 #include "BacteriaCell.h"
 #include "Engine/EngineTypes.h"
 #include "Components/StaticMeshComponent.h"
-#include "PhysicsEngine/BodyInstance.h"
+
 
 
 ABacteriaCell::ABacteriaCell()
